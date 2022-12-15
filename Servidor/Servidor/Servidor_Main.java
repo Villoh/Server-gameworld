@@ -1,10 +1,10 @@
-package Servidor_hilos;
+package Servidor;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Servi {
+public class Servidor_Main {
 
     public static void main(String[] args) {
 
@@ -22,7 +22,7 @@ public class Servi {
 
             while (true) {
 
-                s = ss.accept(); //Entro un nuevo cliente
+                s = ss.accept(); //Entra un nuevo cliente
 
                 Server_Hilo sh = new Server_Hilo(s);
 
@@ -30,9 +30,8 @@ public class Servi {
 
             }
 
-        } catch (IOException e) {
-
-            throw new RuntimeException(e);
+        } catch (IOException ioe) {
+            System.err.println(ioe);
         }
 
     }
