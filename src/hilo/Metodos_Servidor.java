@@ -15,54 +15,52 @@ public class Metodos_Servidor {
      */
     public void reciboPeticion() throws IOException {
 
-        try {
-            DataInputStream dis = new DataInputStream(s.getInputStream());
+        DataInputStream dis = new DataInputStream(s.getInputStream()); //Crea un DataInputStream mediante el InputStream del socket, para poder recibir las peticiones (datos) del cliente
 
-            int decision = dis.readInt();
+        int decision = dis.readInt(); //Lee la 1a petición como entero
 
-            String nombreFichero = dis.readUTF();
+        String nombreFichero = dis.readUTF(); //Lee la 2a petición como un string
 
-            System.out.println("El cliente tomo la decision Nº " + decision);
+        System.out.println("El cliente tomo la decision Nº " + decision);
 
-            switch (decision) {
-                case 1 -> {
-                    mandaFichero(nombreFichero);
-                    System.out.println("Finalizo c:");
-                }
-                case 2 -> {
-                    recibeFichero(nombreFichero);
-                    System.out.println("Finalizo c:");
-                }
-                default -> System.err.println("La petición no existe o algo ha salido mal");
+        //Basándonos en el entero recibido se realiza una acción u otra.
+        switch (decision) {
+            case 1 -> {
+                mandaFichero(nombreFichero);
+                System.out.println("Fichero mandado!");
             }
-        } catch (IOException e) {
-            System.err.println("Error de lectura/escritura: " + e);
+            case 2 -> {
+                recibeFichero(nombreFichero);
+                System.out.println("Fichero subido!");
+            }
+            default -> System.err.println("La petición no existe o algo ha salido mal");
         }
+
     }
 
     /**
      * Obtiene el fichero del stream de la aplicación y lo escribe en el servidor.
      * @param nombreFichero Nombre del fichero que va a subir al servidor.
      */
-    private void recibeFichero(String nombreFichero) {
-        InputStream in = null;
-        OutputStream out = null;
+    private void recibeFichero(String nombreFichero) throws IOException{
+        InputStream in;
+        OutputStream out;
         try {
-            in = s.getInputStream();
-            out = new FileOutputStream("E:\\Programas\\gameworld\\games\\" + nombreFichero);
-            byte[] bytes = new byte[1024];
+            in = s.getInputStream(); //InputStream del socket para poder recibir los datos del fichero.
+            out = new FileOutputStream("E:\\Programas\\gameworld\\games\\" + nombreFichero); //Crea un FileOutputStream con la ruta deseada y el nombre del fichero indicado.
+            byte[] bytes = new byte[1024]; //Array de bytes que se va a utilizar para manipular el archivo.
 
+            //Bucle y contador para la escritura de los bytes en el stream con el directorio y archivo indicado.
             int count;
             while ((count = in.read(bytes)) > 0) {
                 out.write(bytes, 0, count);
             }
+            //Cierro flujos.
             out.close();
             in.close();
             s.close();
         } catch (FileNotFoundException fnfe) {
             System.err.println("Fichero no encontrado" + fnfe);
-        } catch (IOException ioe) {
-            System.err.println("El archivo no se ha podido escribir: " + ioe);
         }
     }
 
@@ -70,26 +68,29 @@ public class Metodos_Servidor {
      *  Escribe el fichero en el stream para que el cliente pueda descargar el archivo especificado.
      * @param nombreFichero Nombre del fichero que va a descargar del servidor.
      */
-    private void mandaFichero(String nombreFichero) {
-        InputStream is = null;
-        File file = new File("E:\\Programas\\gameworld\\games\\" + nombreFichero);
+    private void mandaFichero(String nombreFichero) throws IOException{
+        InputStream is;
+        File file;
+        OutputStream out;
         // Get the size of the file
         byte[] bytes = new byte[1024];
 
         try {
-            is = new FileInputStream(file);
-            OutputStream out = s.getOutputStream();
+            file = new File("E:\\Programas\\gameworld\\games\\" + nombreFichero); //Fichero que va a mandar al stream del socket.
+            is = new FileInputStream(file); //Stream creado para leer los bytes del archivo.
+            out = s.getOutputStream(); //Stream del socket para escribir los bytes y que el cliente los pueda manipular.
+
+            //Bucle y contador para la escritura de los bytes en el stream del socket.
             int count;
             while ((count = is.read(bytes)) > 0) {
                 out.write(bytes, 0, count);
             }
+            //Cierro flujos.
             is.close();
             out.close();
             s.close();
         } catch (FileNotFoundException fnfe) {
             System.err.println("Fichero no encontrado" + fnfe);
-        } catch (IOException ioe) {
-            System.err.println("El archivo no se ha podido escribir: " + ioe);
         }
     }
 

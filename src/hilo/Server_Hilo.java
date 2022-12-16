@@ -14,10 +14,10 @@ public class Server_Hilo extends Thread{
 
     public void run () {
         try {
-            hiloMetodos = new Metodos_Servidor(s);
-            hiloMetodos.reciboPeticion();
+            hiloMetodos = new Metodos_Servidor(s); //Instancio un nuevo hilo
+            hiloMetodos.reciboPeticion(); //Llamo a reciboPetición para comprobar la petición realizada por el cliente
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            System.err.println("Error de lectura/escritura: " + e);
         }
 
     }

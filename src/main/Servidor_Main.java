@@ -9,31 +9,27 @@ public class Servidor_Main {
 
     public static void main(String[] args) {
 
-        ServerSocket ss = null;
+        Socket s;   //Socket del cliente que mande la petición.
+        final int puerto = 5000; //Puerto por el que va a escuchar el servidor.
 
-        Socket s = null;
-
-        final int puerto = 5000;
-
-        try {
-
-            ss = new ServerSocket(puerto);
+        //Intenta crar un ServerSocket
+        try (ServerSocket ss = new ServerSocket(puerto)){
 
             System.out.println("Servidor iniciado");
 
+            //Bucle infinito para mantenerse escuchando peticiones de clientes.
             while (true) {
 
-                s = ss.accept(); //Entra un nuevo cliente
+                s = ss.accept(); //Entra un nuevo cliente.
 
-                Server_Hilo sh = new Server_Hilo(s);
+                Server_Hilo sh = new Server_Hilo(s); //Instancia un nuevo hilo.
 
-                sh.start();
+                sh.start(); //Comienza el hilo.
 
             }
 
-        } catch (IOException ioe) {
-            System.err.println(ioe);
+        } catch (IOException e) {
+            System.err.println("Error de lectura/escritura: " + e);
         }
-
     }
 }
