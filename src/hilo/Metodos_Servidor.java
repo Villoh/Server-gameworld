@@ -1,4 +1,4 @@
-package Servidor;
+package hilo;
 
 import java.io.*;
 import java.net.Socket;

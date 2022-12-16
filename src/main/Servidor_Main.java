@@ -1,5 +1,6 @@
-package Servidor;
+package main;
 
+import hilo.Server_Hilo;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
