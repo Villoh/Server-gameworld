@@ -47,7 +47,7 @@ public class Metodos_Servidor {
         OutputStream out;
         try {
             in = s.getInputStream(); //InputStream del socket para poder recibir los datos del fichero.
-            out = new FileOutputStream("E:\\Programas\\gameworld\\games\\" + nombreFichero); //Crea un FileOutputStream con la ruta deseada y el nombre del fichero indicado.
+            out = new FileOutputStream("/lib/gameworld/games/" + nombreFichero); //Crea un FileOutputStream con la ruta deseada y el nombre del fichero indicado.
             byte[] bytes = new byte[1024]; //Array de bytes que se va a utilizar para manipular el archivo.
 
             //Bucle y contador para la escritura de los bytes en el stream con el directorio y archivo indicado.
@@ -76,7 +76,7 @@ public class Metodos_Servidor {
         byte[] bytes = new byte[1024];
 
         try {
-            file = new File("E:\\Programas\\gameworld\\games\\" + nombreFichero); //Fichero que va a mandar al stream del socket.
+            file = new File("/lib/gameworld/games/" + nombreFichero); //Fichero que va a mandar al stream del socket.
             is = new FileInputStream(file); //Stream creado para leer los bytes del archivo.
             out = s.getOutputStream(); //Stream del socket para escribir los bytes y que el cliente los pueda manipular.
 
