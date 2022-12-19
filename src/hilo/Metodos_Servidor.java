@@ -18,7 +18,7 @@ public class Metodos_Servidor {
 
         DataInputStream dis = new DataInputStream(s.getInputStream()); //Crea un DataInputStream mediante el InputStream del socket, para poder recibir las peticiones (datos) del cliente
 
-        String pathGlobal = "";
+        String pathGlobal; //Declaro un directorio que se modificara en base
 
         int decision = dis.readInt(); //Lee la 1a petición como entero
 
@@ -28,15 +28,13 @@ public class Metodos_Servidor {
 
         //Basándonos en el entero recibido se realiza una acción u otra.
         switch (decision) {
-            case 1 -> {
+            case 1 -> { //Juegos
                 pathGlobal = "/lib/gameworld/games/";
                 mandaFichero(pathGlobal, nombreFichero);
-                System.out.println("Fichero mandado!");
             }
-            case 2 -> {
+            case 2 -> { //Juegos
                 pathGlobal = "/lib/gameworld/games/";
                 recibeFichero(pathGlobal, nombreFichero);
-                System.out.println("Fichero subido!");
             }
             case 3 -> { //Imágenes (Portadas)
                 pathGlobal = "/lib/gameworld/portadas/";
@@ -56,8 +54,8 @@ public class Metodos_Servidor {
      * @param nombreFichero Nombre del fichero que va a subir al servidor.
      */
     private void recibeFichero(String pathGlobal, String nombreFichero) throws IOException{
-        InputStream in;
-        OutputStream out;
+        InputStream in = null;
+        OutputStream out = null;
         try {
             in = s.getInputStream(); //InputStream del socket para poder recibir los datos del fichero.
             out = new FileOutputStream(pathGlobal + nombreFichero); //Crea un FileOutputStream con la ruta deseada y el nombre del fichero indicado.
@@ -68,13 +66,16 @@ public class Metodos_Servidor {
             while ((count = in.read(bytes)) > 0) {
                 out.write(bytes, 0, count);
             }
-            //Cierro flujos.
-
-            out.close();
-            in.close();
-            s.close();
+            System.out.println("Fichero " + nombreFichero + " subido!");
         } catch (FileNotFoundException fnfe) {
             System.err.println("Fichero no encontrado" + fnfe);
+        } finally {
+            //Cierro flujos.
+            if(out != null && in != null) {
+                out.close();
+                in.close();
+            }
+            s.close();
         }
     }
 
@@ -84,9 +85,9 @@ public class Metodos_Servidor {
      * @param nombreFichero Nombre del fichero que va a descargar del servidor.
      */
     private void mandaFichero(String pathGlobal, String nombreFichero) throws IOException{
-        InputStream is;
+        InputStream is = null;
         File file;
-        OutputStream out;
+        OutputStream out = null;
         // Get the size of the file
         byte[] bytes = new byte[1024];
 
@@ -100,12 +101,15 @@ public class Metodos_Servidor {
             while ((count = is.read(bytes)) > 0) {
                 out.write(bytes, 0, count);
             }
-            //Cierro flujos.
-            is.close();
-            out.close();
-            s.close();
+            System.out.println("Fichero " + nombreFichero + "  mandado!");
         } catch (FileNotFoundException fnfe) {
             System.err.println("Fichero no encontrado" + fnfe);
+        } finally {
+            if(is != null && out != null){
+                is.close();
+                out.close();
+            }
+            s.close();
         }
     }
 
